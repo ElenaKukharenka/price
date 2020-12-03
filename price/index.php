@@ -1,19 +1,19 @@
-<?php
+п»ї<?php
 $mysqli = new mysqli("localhost", "root", "", "pricelist");
 
 $query = "SELECT * FROM price2";
 
 $query_res = mysqli_query($mysqli, $query);
-//переменные для общего количества товаров на двух складах	
+//РїРµСЂРµРјРµРЅРЅС‹Рµ РґР»СЏ РѕР±С‰РµРіРѕ РєРѕР»РёС‡РµСЃС‚РІР° С‚РѕРІР°СЂРѕРІ РЅР° РґРІСѓС… СЃРєР»Р°РґР°С…	
 	$sum1 = 0;
 	$sum2 = 0;
-//переменные для подсчета средней стоимости товаров
+//РїРµСЂРµРјРµРЅРЅС‹Рµ РґР»СЏ РїРѕРґСЃС‡РµС‚Р° СЃСЂРµРґРЅРµР№ СЃС‚РѕРёРјРѕСЃС‚Рё С‚РѕРІР°СЂРѕРІ
 	$cost_rozn = 0;
 	$cost_opt = 0;
-//счетчик строк	
+//СЃС‡РµС‚С‡РёРє СЃС‚СЂРѕРє	
 	$i=0;
-//предупреждение 
-	$note_text = "Осталось мало!! Срочно докупите!!!";
+//РїСЂРµРґСѓРїСЂРµР¶РґРµРЅРёРµ 
+	$note_text = "РћСЃС‚Р°Р»РѕСЃСЊ РјР°Р»Рѕ!! РЎСЂРѕС‡РЅРѕ РґРѕРєСѓРїРёС‚Рµ!!!";
 	$max = 0;
 	$max_i = 0;
 	$idx = 0;
@@ -23,7 +23,7 @@ $query_res2 = mysqli_query($mysqli, $query2);
 	{
 		$result_array[] = $row;
 	
-		// ПОИСК МАКСИМАЛЬНОЙ ЦЕНЫ
+		// РџРћРРЎРљ РњРђРљРЎРРњРђР›Р¬РќРћР™ Р¦Р•РќР«
 		if ($row['cost'] > $max) {
 			$max = $row['cost'];
 			$max_i = $idx;
@@ -33,20 +33,21 @@ $query_res2 = mysqli_query($mysqli, $query2);
 	
 if($query_res) {
     echo ("<table  >
+	
         <tr>          
-            <th>Наименование товара</th>
-            <th>Стоимость, руб</th>
-            <th>Стоимость опт, руб</th>
-            <th>Наличие на складе 1, шт</th>
-            <th>Наличие на складе 2, шт</th>
-            <th>Страна производства</th>
-            <th>Примечание</th>
+            <th>РќР°РёРјРµРЅРѕРІР°РЅРёРµ С‚РѕРІР°СЂР°</th>
+            <th>РЎС‚РѕРёРјРѕСЃС‚СЊ, СЂСѓР±</th>
+            <th>РЎС‚РѕРёРјРѕСЃС‚СЊ РѕРїС‚, СЂСѓР±</th>
+            <th>РќР°Р»РёС‡РёРµ РЅР° СЃРєР»Р°РґРµ 1, С€С‚</th>
+            <th>РќР°Р»РёС‡РёРµ РЅР° СЃРєР»Р°РґРµ 2, С€С‚</th>
+            <th>РЎС‚СЂР°РЅР° РїСЂРѕРёР·РІРѕРґСЃС‚РІР°</th>
+            <th>РџСЂРёРјРµС‡Р°РЅРёРµ</th>
         </tr>");
 
         while($row = mysqli_fetch_assoc($query_res)){
         echo ("<tr>");
           
-                echo (iconv('UTF-8','WINDOWS-1251',("<td>$row[name]</td>")));
+                echo ("<td>$row[name]</td>");
 				
 				if( $i == $max_i){
 				echo("<td style='color:red;'>$row[cost]</td>");				
@@ -58,9 +59,9 @@ if($query_res) {
 				echo("<td>$row[cost_opt]</td>");
 				echo("<td>$row[stock_availability1]</td>");
 				echo("<td>$row[stock_availability2]</td>");
-				echo (iconv('UTF-8','WINDOWS-1251',("<td>$row[country]</td>")));
+				echo ("<td>$row[country]</td>");
 				
-				//если товара на складе мало - вывести предупреждение
+				//РµСЃР»Рё С‚РѕРІР°СЂР° РЅР° СЃРєР»Р°РґРµ РјР°Р»Рѕ - РІС‹РІРµСЃС‚Рё РїСЂРµРґСѓРїСЂРµР¶РґРµРЅРёРµ
 				if($row[stock_availability1]<= 20 || $row[stock_availability2]<= 20){
 					$row[note] = $note_text;
 					echo ("<td>$row[note]</td>");
@@ -82,15 +83,15 @@ if($query_res) {
 
   echo ("</table>"); 
   
-  $vsego = 'Всего: ';
+  $vsego = 'Р’СЃРµРіРѕ: ';
 	echo $vsego.($sum1+$sum2).'<br>' ;
 	
 	$sred_rozn = $cost_rozn/$i;
-	$sred_rozn_text = 'Cредняя стоимость розничной цены товара: ';
+	$sred_rozn_text = 'CСЂРµРґРЅСЏСЏ СЃС‚РѕРёРјРѕСЃС‚СЊ СЂРѕР·РЅРёС‡РЅРѕР№ С†РµРЅС‹ С‚РѕРІР°СЂР°: ';
 	echo $sred_rozn_text.$sred_rozn.'<br>';
 	
 	$sred_opt = $cost_opt/$i;
-	$sred_opt_text = 'Cредняя стоимость оптовой цены товара: ';
+	$sred_opt_text = 'CСЂРµРґРЅСЏСЏ СЃС‚РѕРёРјРѕСЃС‚СЊ РѕРїС‚РѕРІРѕР№ С†РµРЅС‹ С‚РѕРІР°СЂР°: ';
 	echo $sred_opt_text.$sred_opt.'<br>';
 			
 $mysqli->close();
