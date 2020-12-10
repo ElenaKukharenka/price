@@ -1,5 +1,5 @@
 ﻿<?php
-$mysqli = new mysqli("localhost", "root", "", "pricelist");
+$mysqli = new mysqli("localhost", "root", "root", "pricelist");
 
 $query = "SELECT * FROM price2";
 
@@ -17,6 +17,10 @@ $query_res = mysqli_query($mysqli, $query);
 	$max = 0;
 	$max_i = 0;
 	$idx = 0;
+//для нахождения минимальной цены
+	$min = 999999999999999;
+	$min_i = 0;	
+	
 $query2 = "SELECT * FROM price2";	
 $query_res2 = mysqli_query($mysqli, $query2);
 	while($row = mysqli_fetch_assoc($query_res2))
@@ -28,6 +32,13 @@ $query_res2 = mysqli_query($mysqli, $query2);
 			$max = $row['cost'];
 			$max_i = $idx;
 		}
+		
+		// нахождение минимальной цены
+		
+		if ($row['cost_opt'] < $min) {
+			$min = $row['cost_opt'];
+			$min_i = $idx;
+		}	
 		$idx++;
 	}
 	
@@ -55,26 +66,32 @@ if($query_res) {
 				else {
 				echo("<td>$row[cost]</td>");
 				}
-				 
+				if($row['cost_opt'] == $min){
+				echo("<td style='color:green;'>$row[cost_opt]</td>");
+				}
+				else {
 				echo("<td>$row[cost_opt]</td>");
+				}
+				 
+				
 				echo("<td>$row[stock_availability1]</td>");
 				echo("<td>$row[stock_availability2]</td>");
 				echo ("<td>$row[country]</td>");
 				
 				//если товара на складе мало - вывести предупреждение
-				if($row[stock_availability1]<= 20 || $row[stock_availability2]<= 20){
-					$row[note] = $note_text;
+				if($row['stock_availability1']<= 20 || $row['stock_availability2']<= 20){
+					$row['note'] = $note_text;
 					echo ("<td>$row[note]</td>");
 					}
 					else {
 						echo ("<td>$row[note]</td>");
 					}
 		
-		$sum1 += $row[stock_availability1];
-		$sum2 += $row[stock_availability2];
+		$sum1 += $row['stock_availability1'];
+		$sum2 += $row['stock_availability2'];
 		
-		$cost_rozn += $row[cost];
-		$cost_opt += $row[cost_opt];
+		$cost_rozn += $row['cost'];
+		$cost_opt += $row['cost_opt'];
 		$i++;
         
 		echo("</tr>");
